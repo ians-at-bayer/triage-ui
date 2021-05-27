@@ -21,7 +21,7 @@ export default function SlackConfiguration({slackHookUrl, handleSlackHookUrlChan
                             <Typography variant="body1">
                                 You can have the Support Triage Manager automatically put information about the
                                 active support person using tags like <b>{"[name], [slackid], [cardurl]"}</b> in the Slack
-                                message. You can also add tags from Slack, for example: {"<!subteam^S6SQ21GSI|ABC Dev Team>"}
+                                message. You can also add tags from Slack, for example: {"<!subteam^S6SQ21GSI|ABC Dev Team>"}&nbsp;
                                 is a link to the ABC Dev Team.
                             </Typography>
                         </Box>
@@ -36,7 +36,7 @@ export default function SlackConfiguration({slackHookUrl, handleSlackHookUrlChan
                 </Tooltip>
             </Box>
             <Box my={2}>
-                <TextField id="slack-hook-url" fullWidth label="Slack Hook Url"
+                <TextField id="slack-hook-url" fullWidth label="Slack Hook Url" style={{width: '700px'}}
                            onChange={(e) => handleSlackHookUrlChange(e.target.value)}
                            value={slackHookUrl} variant='outlined'/>
             </Box>
@@ -48,6 +48,7 @@ export default function SlackConfiguration({slackHookUrl, handleSlackHookUrlChan
                     multiline
                     rows={3}
                     variant='outlined'
+                    style={{width: '700px'}}
                     value={slackMessage}
                     onChange={(e) => handleSlackMessageChange(e.target.value)}
                 />

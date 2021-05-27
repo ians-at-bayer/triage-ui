@@ -1,10 +1,20 @@
 import React from 'react'
-import {Box, IconButton, List, ListItem, ListItemIcon, ListItemSecondaryAction, TextField} from "@material-ui/core";
+import {
+    Box,
+    IconButton,
+    List,
+    ListItem,
+    ListItemIcon,
+    ListItemSecondaryAction,
+    TextField,
+    Tooltip, Typography
+} from "@material-ui/core";
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
 import { Container, Draggable } from "react-smooth-dnd";
 import DragHandleIcon from "@material-ui/icons/DragHandle";
 import arrayMove from "array-move";
+import HelpIcon from "@material-ui/icons/Help";
 
 export default function TeamMembersConfiguration({users, updateUsers, setNotification, requiredUsers = []}) {
 
@@ -63,7 +73,28 @@ export default function TeamMembersConfiguration({users, updateUsers, setNotific
     return (
         <React.Fragment>
             <Box my={2}>
-                Team members are listed in the <b>rotation order</b>. Change the rotation order by dragging <DragHandleIcon style={{verticalAlign: 'middle'}} fontSize='small'/> .
+                Team members are listed in the <b>rotation order.</b>
+                <Tooltip style={{maxWidth: '500', marginLeft: '5px', marginRight: '5px', verticalAlign: 'bottom'}} title={
+                    <React.Fragment>
+                        <Box my={2}>
+                            <Typography variant="body1">
+                                The rotation order determines when members of your team will be put on support.
+                                The first team member will go first, the second will go second and onwards for each team member.
+                                The person on support advances after each scheduled rotation. When the last person on the team
+                                is on support the rotation will advance to the first person, completing a cycle.
+                            </Typography>
+                        </Box>
+
+                        <Box my={2}>
+                            <Typography variant="body1">
+                                You can change the rotation order, team members, time, or frequency at any time.
+                            </Typography>
+                        </Box>
+                    </React.Fragment>
+                }>
+                    <HelpIcon/>
+                </Tooltip>
+                 Change the rotation order by dragging <DragHandleIcon style={{verticalAlign: 'middle'}} fontSize='small'/> .
             </Box>
             <List style={{maxWidth: '775px', marginLeft: '-20px'}}>
                 <Container dragHandleSelector=".drag-handle" onDrop={onDrop}>

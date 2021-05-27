@@ -44,7 +44,7 @@ export default function RotationScheduler({ selectedDate, setSelectedDate, selec
                     inputProps={{step: 300}}
                 />
             </MuiPickersUtilsProvider>
-                local time rotate the support person and send a message to Slack.
+                local time rotate to the next support person and send a message to Slack notifying everyone of this.
         </React.Fragment>
     )
 }

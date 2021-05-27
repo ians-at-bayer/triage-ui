@@ -107,9 +107,19 @@ export default function CreateTeamContainer({userName, userId}) {
                                 <Typography variant="h6">Name Your Team</Typography>
 
                                 <Box my={2}>
-                                <TextField style={{width: '500px'}} variant='outlined' id="team-name"
+                                <TextField style={{width: '700px'}} variant='outlined' id="team-name"
                                            onChange={e => setTeamName(e.target.value)} label="Team Name"
                                            value={teamName} inputProps={{ maxLength: 50 }}/>
+                                </Box>
+                            </Paper>
+                        </Grid>
+
+                        <Grid item xs={12}>
+                            <Paper variant="outlined" style={{padding: '10px'}}>
+                                <Typography variant="h6">Setup Your Rotation Order</Typography>
+
+                                <Box my={2}>
+                                    <TeamMembersConfiguration requiredUsers={[userId]} users={users} updateUsers={updateUsers} setNotification={setNotificationDispatch}/>
                                 </Box>
                             </Paper>
                         </Grid>
@@ -122,16 +132,6 @@ export default function CreateTeamContainer({userName, userId}) {
                                     <RotationScheduler selectedDate={selectedDate} setSelectedDate={setSelectedDate}
                                                        selectedFreq={selectedFreq} setSelectedFreq={setSelectedFreq}/>
 
-                                </Box>
-                            </Paper>
-                        </Grid>
-
-                        <Grid item xs={12}>
-                            <Paper variant="outlined" style={{padding: '10px'}}>
-                                <Typography variant="h6">Setup Your Rotation Order</Typography>
-
-                                <Box my={2}>
-                                    <TeamMembersConfiguration requiredUsers={[userId]} users={users} updateUsers={updateUsers} setNotification={setNotificationDispatch}/>
                                 </Box>
                             </Paper>
                         </Grid>
@@ -151,20 +151,13 @@ export default function CreateTeamContainer({userName, userId}) {
 
                         <Grid item xs={12}>
                             <Paper variant="outlined" style={{padding: '10px'}}>
-                                <Typography variant="h6">For Your Information</Typography>
                                 <Box my={2}>
-                                    When you click the "Create Team" button:
-                                    <ul>
-                                        <li>{firstUserName ? firstUserName + ' (the first team member given in the rotation order)' : 'The first team member given in the rotation order'} will be put on support for {selectedFreq} days</li>
-                                        <li>Slack will be notified that {firstUserName ? firstUserName : 'the first user above'} is on support using your Slack hook immediately</li>
-                                        <li>Every {selectedFreq} day(s) the person on support will rotate at {selectedDate instanceof Date && isFinite(selectedDate) ? selectedDate.toLocaleTimeString() : 'the given'} local time according to the rotation schedule. Slack will be notified each time.</li>
-                                    </ul>
+                                    When you click the "Create Team" button, {firstUserName ? firstUserName + ' (the first team member in the rotation order)' : 'the first team member in the rotation order'} will be put on support for {selectedFreq} days. <b>Slack will be notified of this immediately.</b>
+                                </Box>
+                                <Box my={2}>
+                                    <Button variant="contained" color="primary" onClick={createTeam}>Create Team</Button>
                                 </Box>
                             </Paper>
-                        </Grid>
-
-                        <Grid item xs={12}>
-                            <Button variant="contained" color="primary" onClick={createTeam}>Create Team</Button>
                         </Grid>
                     </Grid>
                 </AccordionDetails>
