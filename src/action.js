@@ -98,7 +98,11 @@ export function handleSetOnCallPerson(slackId) {
         return api.setOnCallPerson(slackId)
             .then(res => dispatch(setNotification({message: "On-Call person updated successfully", type: 'info'})))
             .catch(err => {
-                dispatch(setNotification({message: "Failed to update the on-call person" , type: 'error'}))
+                if (err.response.body !== undefined && err.response.body !== null) {
+                    dispatch(setNotification({message: "Failed to set on call person: " + err.response.body.errorMessage , type: 'error'}))
+                } else {
+                    dispatch(setNotification({message: "Failed to set on call person" , type: 'error'}))
+                }
 
                 console.log(err)
             })

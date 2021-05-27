@@ -29,7 +29,7 @@ export default function CreateTeamContainer({userName, userId}) {
     const [selectedFreq, setSelectedFreq] = React.useState(7)
     const [selectedDate, setSelectedDate] = React.useState(createRotationDate('09', '00', selectedFreq))
     const [slackHookUrl, setSlackHookUrl] = React.useState("http://yourslackhookurlhere/")
-    const [slackMessage, setSlackMessage] = React.useState("Hi I'm [name] and I'm on support this week. Feel free to DM me <@[slackid]> or my team <!subteam^S6SQ21GSI|ABC Dev Team>. If you want to keep up with who is on support, try using our <[cardurl]|contact card>. It always has the latest support info for our team.")
+    const [slackMessage, setSlackMessage] = React.useState("Hi I'm [name] and I'm on support this week. Feel free to DM me [slackid] or my team <!subteam^S6SQ21GSC|Triton Dev Team>. If you want to keep up with who is on support, try using our <[cardurl]|contact card>. It always has the latest support info for our team.")
     const [users, updateUsers] = React.useState([{id: 0, slackId: userId, name: userName},{id: 1, slackId: '', name: ''}])
 
     const firstUserName = users[0] ? users[0].name : null

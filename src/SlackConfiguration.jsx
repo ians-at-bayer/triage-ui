@@ -21,8 +21,8 @@ export default function SlackConfiguration({slackHookUrl, handleSlackHookUrlChan
                             <Typography variant="body1">
                                 You can have the Support Triage Manager automatically put information about the
                                 active support person using tags like <b>{"[name], [slackid], [cardurl]"}</b> in the Slack
-                                message. Use {"<@[slackid]>"} to turn the user's Slack ID into a link in Slack. You can also add other tags from
-                                Slack such as team tags, for example: {"<!subteam^S6SQ21GSI|ABC Dev Team>"} is a link to the ABC Dev Team.
+                                message. You can also add tags from Slack, for example: {"<!subteam^S6SQ21GSI|ABC Dev Team>"}
+                                is a link to the ABC Dev Team.
                             </Typography>
                         </Box>
                         <Box my={2}>

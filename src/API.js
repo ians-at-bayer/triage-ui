@@ -39,6 +39,10 @@ class API {
         return this._request('GET', `${this.url}/on-call`)
     }
 
+    getOnCallUserForTeam(teamId) {
+        return this._request('GET', `${this.url}/on-call/${teamId}`)
+    }
+
     //
     // POST
     //

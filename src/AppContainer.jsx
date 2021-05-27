@@ -10,6 +10,7 @@ import api from "./API";
 import ManageTeamContainer from "./ManageTeamContainer";
 import CreateTeamContainer from "./CreateTeamContainer";
 import ProgressContainer from "./ProgressContainer";
+import OnCallCard from "./OnCallCard";
 
 export class AppContainer extends React.Component {
 
@@ -56,8 +57,8 @@ export class AppContainer extends React.Component {
               {teamId === null && teamId !== undefined && <CreateTeamContainer userName={userName} userId={userId}/>}
             </div>
           </Route>
-          <Route exact path="/on-call">
-            On call card goes here.
+          <Route exact path="/on-call/:teamId">
+            <OnCallCard />
           </Route>
         </Switch>
       </div>
