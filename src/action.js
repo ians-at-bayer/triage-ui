@@ -59,7 +59,7 @@ export function handleSendSlackMessage() {
     return dispatch => {
         return api.slackSend().then(res => dispatch(setNotification({message: "Slack message sent successfully", type: 'info'})))
             .catch(err => {
-                dispatch(setNotification({message: "Failed to send Slack message", type: 'error'}))
+                dispatch(setNotification({message: "Failed to send Slack message. Please try again later.", type: 'error'}))
                 console.log(err)
             })
     }

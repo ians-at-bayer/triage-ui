@@ -18,8 +18,7 @@ import RotationScheduler from "./RotationScheduler";
 import TeamMembersConfiguration from "./TeamMembersConfiguration";
 import SlackConfiguration from "./SlackConfiguration";
 import PersonOnCall from "./PersonOnCall";
-
-let origState = {}
+import {ChickenTestDialog} from "./ChickenTestDialog";
 
 export class ManageTeamContainer extends React.Component {
 
@@ -39,7 +38,10 @@ export class ManageTeamContainer extends React.Component {
             slackHookUrl: '',
 
             onCallUserId: '',
-            selectedOnCallUserId: ''
+            selectedOnCallUserId: '',
+
+            showSlackMsgChickenTest: false,
+            showChangeOnCallChickenTest: false
         }
     }
 
@@ -106,7 +108,7 @@ export class ManageTeamContainer extends React.Component {
         const { userId, setNotification, handleSaveRotation, handleSaveSlackSettings, handleSendSlackMessage,
             handleSaveTeamMembers, handleSaveTeamName, handleSetOnCallPerson } = this.props
         const {selectedTab, teamName, rotationTime, rotationFreq, teamMembers, slackHookUrl, slackHookMessage,
-            onCallUserId, selectedOnCallUserId, teamMembersForOnCall } = this.state
+            onCallUserId, selectedOnCallUserId, teamMembersForOnCall, showSlackMsgChickenTest, showChangeOnCallChickenTest } = this.state
         const TabPanel = this.tabPanel
 
         const handleSetTeamName = (teamName) => this.setState({teamName})
@@ -117,6 +119,8 @@ export class ManageTeamContainer extends React.Component {
         const handleSetSlackMessage = (slackHookMessage) => this.setState({slackHookMessage})
         const handleSetOnCallUser = (slackId) => this.setState({selectedOnCallUserId: slackId})
         const handleSelectTab = (event, newValue) => this.setState({selectedTab: newValue})
+        const handleSlackMsgChickenTest = (bool) => this.setState({showSlackMsgChickenTest: bool})
+        const handleChangeOnCallChickenTest = (bool) => this.setState({showChangeOnCallChickenTest: bool})
 
         const saveRotation = () => handleSaveRotation(rotationFreq, rotationTime)
         const saveSlackSettings = () => handleSaveSlackSettings(slackHookUrl, slackHookMessage)
@@ -156,7 +160,9 @@ export class ManageTeamContainer extends React.Component {
                             <PersonOnCall users={teamMembersForOnCall} onCallUserId={selectedOnCallUserId} setOnCallUser={handleSetOnCallUser} />
                         </Box>
 
-                        <Button variant="contained" color="primary" onClick={saveOnCallPerson}>Save</Button>
+                        <Button variant="contained" color="primary" onClick={() => handleChangeOnCallChickenTest(true)}>Save</Button>
+                        <ChickenTestDialog isOpen={showChangeOnCallChickenTest} setOpen={handleChangeOnCallChickenTest} actionCallback={saveOnCallPerson}
+                                           chickenTestQuestion="Are you sure you want change the on call person? This will notify Slack."/>
                     </TabPanel>
                     <TabPanel value={selectedTab} index={2}>
                         <Box my={2}>
@@ -176,7 +182,9 @@ export class ManageTeamContainer extends React.Component {
 
                         &nbsp;
 
-                        <Button variant="contained" color="secondary" onClick={sendSlackMessage}>Send Slack Message</Button>
+                        <Button variant="contained" color="secondary" onClick={() => handleSlackMsgChickenTest(true)}>Send Slack Message</Button>
+                        <ChickenTestDialog isOpen={showSlackMsgChickenTest} setOpen={handleSlackMsgChickenTest} actionCallback={sendSlackMessage}
+                                           chickenTestQuestion="Are you sure you want to send a Slack message? This will not change who is on support."/>
                     </TabPanel>
                     <TabPanel value={selectedTab} index={4}>
                         <Box my={2}>
