@@ -98,6 +98,13 @@ class API {
     }
 
     //
+    //Delete
+    //
+    deleteTeam() {
+        return this._request('DELETE', `${this.url}/team`)
+    }
+
+    //
     //Utils
     //
 

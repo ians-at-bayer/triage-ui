@@ -108,3 +108,29 @@ export function handleSetOnCallPerson(slackId) {
             })
     }
 }
+
+export function handleDeleteTeam() {
+    return dispatch => {
+        return api.deleteTeam()
+            .then(res => {
+                dispatch(setNotification({message: "Team deleted successfully", type: 'info'}))
+                wait(3000).then(() => window.location.reload(false))
+            })
+            .catch(err => {
+                if (err.response.body !== undefined && err.response.body !== null) {
+                    dispatch(setNotification({message: "Team failed to delete: " + err.response.body.errorMessage , type: 'error'}))
+                } else {
+                    dispatch(setNotification({message: "Team failed to delete" , type: 'error'}))
+                }
+
+                console.log(err)
+            })
+    }
+}
+
+
+export const wait = (timeMs = 2500) => new Promise(resolve => {
+    setTimeout(() => {
+        resolve()
+    }, timeMs)
+})

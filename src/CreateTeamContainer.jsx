@@ -14,7 +14,7 @@ import RotationScheduler from "./RotationScheduler";
 import SlackConfiguration from "./SlackConfiguration";
 import TeamMembersConfiguration from "./TeamMembersConfiguration";
 import {useDispatch} from "react-redux";
-import {setLoading, setNotification} from "./action";
+import {setLoading, setNotification, wait} from "./action";
 import api from "./API";
 import {createRotationDate} from "./Util";
 
@@ -50,7 +50,7 @@ export default function CreateTeamContainer({userName, userId}) {
             .then(res => {
                 setLoadingDispatch(false)
                 setNotificationDispatch({message: "Team created successfully" , type: 'info'})
-                waitThenReload.then(() => window.location.reload(false))
+                wait().then(() => window.location.reload(false))
             }).catch(err => {
                 setLoadingDispatch(false)
 
@@ -61,12 +61,6 @@ export default function CreateTeamContainer({userName, userId}) {
                 }
             })
     }
-
-    const waitThenReload = new Promise(resolve => {
-        setTimeout(() => {
-            resolve()
-        }, 2500)
-    })
 
     return (
         <React.Fragment>

@@ -4,6 +4,7 @@ import {bindActionCreators} from 'redux'
 import {AppBar, Box, Button, Paper, Tab, Tabs, TextField, Typography} from "@material-ui/core";
 import api from "./API";
 import {
+    handleDeleteTeam,
     handleSaveRotation,
     handleSaveSlackSettings,
     handleSaveTeamMembers,
@@ -41,7 +42,8 @@ export class ManageTeamContainer extends React.Component {
             selectedOnCallUserId: '',
 
             showSlackMsgChickenTest: false,
-            showChangeOnCallChickenTest: false
+            showChangeOnCallChickenTest: false,
+            showDeleteTeamChickenTest: false
         }
     }
 
@@ -106,9 +108,9 @@ export class ManageTeamContainer extends React.Component {
     render() {
 
         const { userId, setNotification, handleSaveRotation, handleSaveSlackSettings, handleSendSlackMessage,
-            handleSaveTeamMembers, handleSaveTeamName, handleSetOnCallPerson } = this.props
+            handleSaveTeamMembers, handleSaveTeamName, handleSetOnCallPerson, handleDeleteTeam } = this.props
         const {selectedTab, teamName, rotationTime, rotationFreq, teamMembers, slackHookUrl, slackHookMessage,
-            onCallUserId, selectedOnCallUserId, teamMembersForOnCall, showSlackMsgChickenTest, showChangeOnCallChickenTest } = this.state
+            onCallUserId, selectedOnCallUserId, teamMembersForOnCall, showSlackMsgChickenTest, showChangeOnCallChickenTest, showDeleteTeamChickenTest } = this.state
         const TabPanel = this.tabPanel
 
         const handleSetTeamName = (teamName) => this.setState({teamName})
@@ -121,6 +123,7 @@ export class ManageTeamContainer extends React.Component {
         const handleSelectTab = (event, newValue) => this.setState({selectedTab: newValue})
         const handleSlackMsgChickenTest = (bool) => this.setState({showSlackMsgChickenTest: bool})
         const handleChangeOnCallChickenTest = (bool) => this.setState({showChangeOnCallChickenTest: bool})
+        const handleDeleteTeamChickenTest = (bool) => this.setState({showDeleteTeamChickenTest: bool})
 
         const saveRotation = () => handleSaveRotation(rotationFreq, rotationTime)
         const saveSlackSettings = () => handleSaveSlackSettings(slackHookUrl, slackHookMessage)
@@ -154,6 +157,10 @@ export class ManageTeamContainer extends React.Component {
                         </Box>
 
                         <Button variant="contained" color="primary" onClick={saveTeamName}>Save</Button>
+                        &nbsp;
+                        <Button variant="contained" color="secondary" onClick={() => handleDeleteTeamChickenTest(true)}>Delete Team</Button>
+                        <ChickenTestDialog isOpen={showDeleteTeamChickenTest} setOpen={handleDeleteTeamChickenTest} actionCallback={handleDeleteTeam}
+                                           chickenTestQuestion="Are you sure you want to delete your team? You cannot undo this action and all team data will be lost."/>
                     </TabPanel>
                     <TabPanel value={selectedTab} index={1}>
                         <Box my={2}>
@@ -213,7 +220,7 @@ ManageTeamContainer.defaultProps = {
 
 const mapDispatchToProps = dispatch => bindActionCreators({
     setLoading, setNotification, handleSaveRotation, handleSaveSlackSettings, handleSendSlackMessage,
-    handleSaveTeamMembers, handleSaveTeamName, handleSetOnCallPerson
+    handleSaveTeamMembers, handleSaveTeamName, handleSetOnCallPerson, handleDeleteTeam
 }, dispatch)
 
 export default connect(state => ({
