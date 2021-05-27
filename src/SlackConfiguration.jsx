@@ -46,7 +46,7 @@ export default function SlackConfiguration({slackHookUrl, handleSlackHookUrlChan
                     fullWidth
                     label="Slack Message"
                     multiline
-                    rows={3}
+                    rows={5}
                     variant='outlined'
                     style={{width: '700px'}}
                     value={slackMessage}
