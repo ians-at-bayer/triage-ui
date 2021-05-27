@@ -1,0 +1,106 @@
+import {
+    CLEAR_NOTIFICATION,
+    SET_FULL_NAME,
+    SET_LOADING,
+    SET_NOTIFICATION,
+    SET_TEAM_ID,
+    SET_USER_ID
+} from "./action-types";
+import api from "./API";
+
+export function setUserId(userId) {
+    return {type: SET_USER_ID, userId}
+}
+
+export function setTeamId(teamId) {
+    return {type: SET_TEAM_ID, teamId}
+}
+
+export function setUserFullName(fullName) {
+    return {type: SET_FULL_NAME, fullName}
+}
+
+export function setNotification(notification) {
+    return {type: SET_NOTIFICATION, notification}
+}
+
+export function clearNotification() {
+    return {type: CLEAR_NOTIFICATION}
+}
+
+export function setLoading(isLoading) {
+    return {type: SET_LOADING, isLoading}
+}
+
+
+export function handleSaveRotation(rotationFreq, rotationTime)  {
+    return dispatch => {
+        return api.saveRotationConfig(rotationFreq, rotationTime.toISOString())
+            .then(res => dispatch(setNotification({message: "Saved rotation changes successfully", type: 'info'})))
+            .catch(err => {
+                dispatch(setNotification({message: "Failed to save rotation changes", type: 'error'}))
+                console.log(err)
+            })
+    }
+}
+
+export function handleSaveSlackSettings(slackHookUrl, slackMessage) {
+    return dispatch => {
+        api.saveSlackConfig(slackHookUrl, slackMessage)
+            .then(res => dispatch(setNotification({message: "Saved Slack settings successfully", type: 'info'})))
+            .catch(err => {
+                dispatch(setNotification({message: "Failed to save Slack settings", type: 'error'}))
+                console.log(err)
+            })
+    }
+}
+
+export function handleSendSlackMessage() {
+    return dispatch => {
+        return api.slackSend().then(res => dispatch(setNotification({message: "Slack message sent successfully", type: 'info'})))
+            .catch(err => {
+                dispatch(setNotification({message: "Failed to send Slack message", type: 'error'}))
+                console.log(err)
+            })
+    }
+}
+
+export function handleSaveTeamMembers(teamMembers) {
+    return dispatch => {
+        return api.saveTeamMembers(teamMembers)
+            .then(res => dispatch(setNotification({message: "Team members saved successfully", type: 'info'})))
+            .catch(err => {
+                if (err.response.body !== undefined && err.response.body !== null) {
+                    dispatch(setNotification({message: "Failed to save Slack settings: " + err.response.body.errorMessage , type: 'error'}))
+                } else {
+                    dispatch(setNotification({message: "Failed to save Slack settings" , type: 'error'}))
+                }
+
+                console.log(err)
+            })
+    }
+}
+
+export function handleSaveTeamName(teamName) {
+    return dispatch => {
+        return api.saveTeamName(teamName)
+            .then(res => dispatch(setNotification({message: "Team name saved successfully", type: 'info'})))
+            .catch(err => {
+                dispatch(setNotification({message: "Failed to save team name" , type: 'error'}))
+
+                console.log(err)
+            })
+    }
+}
+
+export function handleSetOnCallPerson(slackId) {
+    return dispatch => {
+        return api.setOnCallPerson(slackId)
+            .then(res => dispatch(setNotification({message: "On-Call person updated successfully", type: 'info'})))
+            .catch(err => {
+                dispatch(setNotification({message: "Failed to update the on-call person" , type: 'error'}))
+
+                console.log(err)
+            })
+    }
+}

@@ -1,17 +1,28 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import AppContainer from "./AppContainer";
+import {Provider} from "react-redux";
+import store from "./store";
+import phoenixNavBar from '@monsantoit/phoenix-navbar'
+import {BrowserRouter, Route, Switch} from "react-router-dom";
 
-ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
-);
+function loadPhoenixNavBar() {
+    return phoenixNavBar.install({
+        element: document.querySelector('#nav'),
+        suiteId: 'velocity',
+        productId: 'support-triage-manager',
+        cookie: 'support-triage-ui-cc',
+    })
+}
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+const loadAppController = (
+      <Provider store={store}>
+          <BrowserRouter basename="/support-triage-manager">
+                <Route render={() => <AppContainer/>} />
+          </BrowserRouter>
+      </Provider>
+)
+
+loadPhoenixNavBar()
+    .then(() => ReactDOM.render(loadAppController, document.getElementById('root')))
+    .catch(err => console.error('Failed to load Phoenix nav bar', err))

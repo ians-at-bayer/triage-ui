@@ -1,0 +1,10 @@
+export const SET_USER_ID = 'SET_USER_ID'
+export const SET_FULL_NAME = 'SET_FULL_NAME'
+
+export const SET_TEAM_ID = 'SET_TEAM_ID'
+
+export const SET_NOTIFICATION = 'SET_NOTIFICATION'
+export const CLEAR_NOTIFICATION = 'CLEAR_NOTIFICATION'
+export const SET_LOADING = 'SET_LOADING'
+
+
