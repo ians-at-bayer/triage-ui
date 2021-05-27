@@ -108,7 +108,7 @@ export class ManageTeamContainer extends React.Component {
     render() {
 
         const { userId, setNotification, handleSaveRotation, handleSaveSlackSettings, handleSendSlackMessage,
-            handleSaveTeamMembers, handleSaveTeamName, handleSetOnCallPerson, handleDeleteTeam } = this.props
+            handleSaveTeamMembers, handleSaveTeamName, handleSetOnCallPerson, handleDeleteTeam, teamId } = this.props
         const {selectedTab, teamName, rotationTime, rotationFreq, teamMembers, slackHookUrl, slackHookMessage,
             onCallUserId, selectedOnCallUserId, teamMembersForOnCall, showSlackMsgChickenTest, showChangeOnCallChickenTest, showDeleteTeamChickenTest } = this.state
         const TabPanel = this.tabPanel
@@ -154,6 +154,9 @@ export class ManageTeamContainer extends React.Component {
                             <TextField style={{width: '500px'}} variant='outlined' id="team-name" label="Team Name"
                                        onChange={e => handleSetTeamName(e.target.value)}
                                        value={teamName} inputProps={{ maxLength: 50 }}/>
+                        </Box>
+                        <Box my={2}>
+                            View or share your team's <a href={'/support-triage-manager/on-call/' + teamId} target="_blank">On Call Card</a>
                         </Box>
 
                         <Button variant="contained" color="primary" onClick={saveTeamName}>Save</Button>
@@ -210,12 +213,14 @@ export class ManageTeamContainer extends React.Component {
 
 ManageTeamContainer.propTypes = {
     userId: PropTypes.string,
-    teamSetup: PropTypes.object
+    teamSetup: PropTypes.object,
+    teamId: PropTypes.number
 }
 
 ManageTeamContainer.defaultProps = {
     userId: '',
-    teamSetup: undefined
+    teamSetup: undefined,
+    teamId: null
 }
 
 const mapDispatchToProps = dispatch => bindActionCreators({
@@ -226,4 +231,5 @@ const mapDispatchToProps = dispatch => bindActionCreators({
 export default connect(state => ({
     userId: state.get('userId'),
     teamSetup: state.get('teamSetup'),
+    teamId: state.get('teamId')
 }), mapDispatchToProps)(ManageTeamContainer)
