@@ -129,6 +129,7 @@ class API {
     }
 }
 
+//TODO: Remove the hardcoded URL used due to the innovation week time crunch
 const api = new API(
     'https://test.velocity-np.ag/support-triage-manager-api/v1',
     60 * 1000,
