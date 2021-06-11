@@ -25,3 +25,5 @@ yarn-error.log*
 .idea
 support-triage-rotations-manage-ui.iml
 package-lock.json
+
+ocelot-info.txt

@@ -1,3 +1,4 @@
+# This app only lives in NP
 module.exports = (cfDeploy) ->
   endpoint: "api.mcf-np.threega.com"
   deployable: './build'
@@ -10,4 +11,4 @@ module.exports = (cfDeploy) ->
   route: "support-triage-manager-ui"
   domain: "mcf-np.local"
   services: []
-  startupCommand: 'serve -l 8080'
+  startupCommand: 'node --max-http-header-size 64000 server.js isNP'

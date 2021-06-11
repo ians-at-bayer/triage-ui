@@ -5,6 +5,7 @@ import {Provider} from "react-redux";
 import store from "./store";
 import phoenixNavBar from '@monsantoit/phoenix-navbar'
 import {BrowserRouter, Route, Switch} from "react-router-dom";
+import {enableAuthTokenSupport} from '@monsantoit/profile-client'
 
 function loadPhoenixNavBar() {
     return phoenixNavBar.install({
@@ -23,6 +24,7 @@ const loadAppController = (
       </Provider>
 )
 
-loadPhoenixNavBar()
+
+Promise.all([loadPhoenixNavBar(), enableAuthTokenSupport()])
     .then(() => ReactDOM.render(loadAppController, document.getElementById('root')))
-    .catch(err => console.error('Failed to load Phoenix nav bar', err))
+    .catch(err => console.error('Failed to load', err))

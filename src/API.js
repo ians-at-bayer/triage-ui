@@ -1,4 +1,5 @@
 import request from 'superagent'
+import {getAuthHeader} from '@monsantoit/profile-client'
 
 class API {
 
@@ -117,17 +118,19 @@ class API {
         return request(method, url)
             .set('Content-Type', 'application/json')
             .set('Accept', 'application/json')
+            .set(getAuthHeader())
             .timeout({
                 // Wait this long for the server to start sending.
                 response: this.timeoutReponse,
                 // Wait this long for the file to finish loading.
                 deadline: this.timeoutDeadline,
             })
+
     }
 }
 
 const api = new API(
-    '/support-triage-manager-api/v1',
+    'https://test.velocity-np.ag/support-triage-manager-api/v1',
     60 * 1000,
     60 * 1000
 )

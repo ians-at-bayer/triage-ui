@@ -20,6 +20,7 @@ import TeamMembersConfiguration from "./TeamMembersConfiguration";
 import SlackConfiguration from "./SlackConfiguration";
 import PersonOnCall from "./PersonOnCall";
 import {ChickenTestDialog} from "./ChickenTestDialog";
+import {padTimeUnit} from "./Util";
 
 export class ManageTeamContainer extends React.Component {
 
@@ -34,7 +35,8 @@ export class ManageTeamContainer extends React.Component {
             teamMembersForOnCall: [],
 
             rotationFreq: 1,
-            rotationTime: new Date(),
+            rotationTime: "09:00",
+            rotationDate: "2020-01-01",
 
             slackHookUrl: '',
 
@@ -59,13 +61,16 @@ export class ManageTeamContainer extends React.Component {
                 const peopleTransformer = (people) => Array.from(people, (people, i) => ({id: i, slackId: people.slackId, name: people.name}))
                 const teamMembers = peopleTransformer(teamSetup.people)
 
+                const rotationDate = new Date(Date.parse(teamSetup.rotationConfig.nextRotationTime))
+
                 const newState = {
                     teamName: teamSetup.teamName,
                     teamMembers: teamMembers,
                     teamMembersForOnCall: teamMembers,
 
                     rotationFreq: teamSetup.rotationConfig.rotationFrequencyDays,
-                    rotationTime: new Date(Date.parse(teamSetup.rotationConfig.nextRotationTime)),
+                    rotationTime: padTimeUnit(rotationDate.getHours()) + ":" + padTimeUnit(rotationDate.getMinutes()),
+                    rotationDate: rotationDate.getFullYear() + "-" + padTimeUnit(rotationDate.getMonth()) + "-" + padTimeUnit(rotationDate.getDate()),
 
                     slackHookUrl: teamSetup.slackConfig.slackHookUrl,
                     slackHookMessage: teamSetup.slackConfig.slackMessage,
@@ -110,11 +115,12 @@ export class ManageTeamContainer extends React.Component {
         const { userId, setNotification, handleSaveRotation, handleSaveSlackSettings, handleSendSlackMessage,
             handleSaveTeamMembers, handleSaveTeamName, handleSetOnCallPerson, handleDeleteTeam, teamId } = this.props
         const {selectedTab, teamName, rotationTime, rotationFreq, teamMembers, slackHookUrl, slackHookMessage,
-            onCallUserId, selectedOnCallUserId, teamMembersForOnCall, showSlackMsgChickenTest, showChangeOnCallChickenTest, showDeleteTeamChickenTest } = this.state
+            onCallUserId, selectedOnCallUserId, teamMembersForOnCall, showSlackMsgChickenTest, showChangeOnCallChickenTest, showDeleteTeamChickenTest, rotationDate } = this.state
         const TabPanel = this.tabPanel
 
         const handleSetTeamName = (teamName) => this.setState({teamName})
         const handleSetRotationTime = (rotationTime) => this.setState({rotationTime})
+        const handleSetRotationDate = (rotationDate) => this.setState({rotationDate})
         const handleSetRotationFreq = (rotationFreq) => this.setState({rotationFreq})
         const handleSetTeamMembers = (teamMembers) => this.setState( {teamMembers})
         const handleSetSlackHookUrl = (slackHookUrl) => this.setState({slackHookUrl})
@@ -125,7 +131,7 @@ export class ManageTeamContainer extends React.Component {
         const handleChangeOnCallChickenTest = (bool) => this.setState({showChangeOnCallChickenTest: bool})
         const handleDeleteTeamChickenTest = (bool) => this.setState({showDeleteTeamChickenTest: bool})
 
-        const saveRotation = () => handleSaveRotation(rotationFreq, rotationTime)
+        const saveRotation = () => handleSaveRotation(rotationFreq, rotationTime, rotationDate)
         const saveSlackSettings = () => handleSaveSlackSettings(slackHookUrl, slackHookMessage)
         const sendSlackMessage = () => handleSendSlackMessage()
         const saveTeamName = () => handleSaveTeamName(teamName)
@@ -198,7 +204,8 @@ export class ManageTeamContainer extends React.Component {
                     </TabPanel>
                     <TabPanel value={selectedTab} index={4}>
                         <Box my={2}>
-                            <RotationScheduler selectedDate={rotationTime} setSelectedDate={handleSetRotationTime}
+                            <RotationScheduler selectedTime={rotationTime} setSelectedTime={handleSetRotationTime}
+                                               selectedDate={rotationDate} setSelectedDate={handleSetRotationDate}
                                                selectedFreq={rotationFreq} setSelectedFreq={handleSetRotationFreq} />
                         </Box>
 

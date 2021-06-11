@@ -1,8 +1,13 @@
-export const createRotationDate = (hours, minutes, freq) => {
-    const today = new Date()
+export const padTimeUnit = (timeUnit) => ('0' + timeUnit).slice(-2)
 
-    const nextRotation = new Date(today.getFullYear(), today.getMonth(), today.getDate(), hours, minutes, 0)
-    nextRotation.setDate(nextRotation.getDate() + freq)
+export function parseDateTimeStrings(rotationTime, rotationDate) {
+    const time = rotationTime.split(":")
+    const date = rotationDate.split("-")
 
-    return nextRotation
+    const year = parseInt(date[0])
+    const month = parseInt(date[1])
+    const day = parseInt(date[2])
+    const hour = parseInt(time[0])
+    const minute = parseInt(time[1])
+    return {year, month, day, hour, minute};
 }

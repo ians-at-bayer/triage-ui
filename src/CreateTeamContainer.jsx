@@ -16,7 +16,7 @@ import TeamMembersConfiguration from "./TeamMembersConfiguration";
 import {useDispatch} from "react-redux";
 import {setLoading, setNotification, wait} from "./action";
 import api from "./API";
-import {createRotationDate} from "./Util";
+import {parseDateTimeStrings} from "./Util";
 
 export default function CreateTeamContainer({userName, userId}) {
 
@@ -27,7 +27,8 @@ export default function CreateTeamContainer({userName, userId}) {
     const [expanded, setExpanded] = React.useState(false)
     const [teamName, setTeamName] = React.useState("")
     const [selectedFreq, setSelectedFreq] = React.useState(7)
-    const [selectedDate, setSelectedDate] = React.useState(createRotationDate('09', '00', selectedFreq))
+    const [selectedDate, setSelectedDate] = React.useState("2020-01-01")
+    const [selectedTime, setSelectedTime] = React.useState("09:00")
     const [slackHookUrl, setSlackHookUrl] = React.useState("http://yourslackhookurlhere/")
     const [slackMessage, setSlackMessage] = React.useState("Hi I'm [name] and I'm on support this week. Feel free to DM me [slackid] or my team <!subteam^S6SQ21GSC|Triton Dev Team>. If you want to keep up with who is on support, try using our <[cardurl]|contact card>. It always has the latest support info for our team.")
     const [users, updateUsers] = React.useState([{id: 0, slackId: userId, name: userName},{id: 1, slackId: '', name: ''}])
@@ -45,8 +46,22 @@ export default function CreateTeamContainer({userName, userId}) {
             return
         }
 
+        const {year, month, day, hour, minute} = parseDateTimeStrings(selectedTime, selectedDate);
+
+        if (year < new Date().getFullYear()) {
+            dispatch(setNotification({message: "Invalid year. The year must be on or after the current year.", type: 'error'}))
+            return
+        }
+
+        const nextRotation = new Date(year, month, day, hour, minute, 0)
+
+        if (nextRotation.getTime() <= new Date().getTime()) {
+            dispatch(setNotification({message: "Invalid date and time. The date and time must be after the current time. ", type: 'error'}))
+            return
+        }
+
         setLoadingDispatch(true)
-        api.setupTeam(teamName, selectedDate.toISOString(), selectedFreq, slackHookUrl, slackMessage, users)
+        api.setupTeam(teamName, nextRotation.toISOString(), selectedFreq, slackHookUrl, slackMessage, users)
             .then(res => {
                 setLoadingDispatch(false)
                 setNotificationDispatch({message: "Team created successfully" , type: 'info'})
@@ -129,7 +144,8 @@ export default function CreateTeamContainer({userName, userId}) {
                                 <Typography variant="h6">Setup Your Rotation Schedule</Typography>
 
                                 <Box my={2}>
-                                    <RotationScheduler selectedDate={selectedDate} setSelectedDate={setSelectedDate}
+                                    <RotationScheduler selectedTime={selectedTime} setSelectedTime={setSelectedTime}
+                                                       selectedDate={selectedDate} setSelectedDate={setSelectedDate}
                                                        selectedFreq={selectedFreq} setSelectedFreq={setSelectedFreq}/>
 
                                 </Box>
@@ -152,7 +168,7 @@ export default function CreateTeamContainer({userName, userId}) {
                         <Grid item xs={12}>
                             <Paper variant="outlined" style={{padding: '10px'}}>
                                 <Box my={2}>
-                                    When you click the "Create Team" button, {firstUserName ? firstUserName + ' (the first team member in the rotation order)' : 'the first team member in the rotation order'} will be put on support for {selectedFreq} days. <b>Slack will be notified of this immediately.</b>
+                                    When you click the "Create Team" button, {firstUserName ? firstUserName + ' (the first team member in the rotation order)' : 'the first team member in the rotation order'} will be put on support until {selectedDate} at {selectedTime}. <b>Slack will be notified of this immediately.</b>
                                 </Box>
                                 <Box my={2}>
                                     <Button variant="contained" color="primary" onClick={createTeam}>Create Team</Button>

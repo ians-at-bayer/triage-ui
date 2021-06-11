@@ -7,6 +7,7 @@ import {
     SET_USER_ID
 } from "./action-types";
 import api from "./API";
+import {parseDateTimeStrings} from "./Util";
 
 export function setUserId(userId) {
     return {type: SET_USER_ID, userId}
@@ -33,9 +34,23 @@ export function setLoading(isLoading) {
 }
 
 
-export function handleSaveRotation(rotationFreq, rotationTime)  {
+export function handleSaveRotation(rotationFreq, rotationTime, rotationDate)  {
     return dispatch => {
-        return api.saveRotationConfig(rotationFreq, rotationTime.toISOString())
+        const {year, month, day, hour, minute} = parseDateTimeStrings(rotationTime, rotationDate);
+
+        if (year < new Date().getFullYear()) {
+            dispatch(setNotification({message: "Invalid year. The year must be on or after the current year.", type: 'error'}))
+            return
+        }
+
+        const nextRotation = new Date(year, month, day, hour, minute, 0)
+
+        if (nextRotation.getTime() <= new Date().getTime()) {
+            dispatch(setNotification({message: "Invalid date and time. The date and time must be after the current time. ", type: 'error'}))
+            return
+        }
+
+        return api.saveRotationConfig(rotationFreq, nextRotation.toISOString())
             .then(res => dispatch(setNotification({message: "Saved rotation changes successfully", type: 'info'})))
             .catch(err => {
                 dispatch(setNotification({message: "Failed to save rotation changes", type: 'error'}))

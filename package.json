@@ -8,9 +8,11 @@
     "@material-ui/icons": "^4.11.2",
     "@material-ui/pickers": "^3.3.10",
     "@monsantoit/phoenix-navbar": "2.3.2",
+    "@monsantoit/phoenix-service-bindings-middleware": "^3.2.1",
     "@monsantoit/profile-client": "^4.0.5",
     "array-move": "^3.0.1",
     "date-fns": "^2.21.3",
+    "express": "^4.17.1",
     "history": "^5.0.0",
     "immutable": "^4.0.0-rc.12",
     "prop-types": "^15.7.2",
@@ -28,8 +30,10 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build && npm run build:packages",
+    "build": "npm run build:client && npm run build:packages && npm run build:server",
+    "build:client": "react-scripts build",
     "build:packages": "cd build && mkdir node_modules && cp -r ../node_modules/* node_modules && cp ../package.json ./ && cd ..",
+    "build:server": "cp server.js ./build/",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -60,5 +64,5 @@
     "node": "10.15.2",
     "npm": "6.4.1"
   },
-  "homepage": "/"
+  "homepage": "/support-triage-manager"
 }
