@@ -10,7 +10,7 @@ export default function RotationScheduler({ selectedTime, setSelectedTime, selec
 
     return (
         <React.Fragment>
-            Starting on&nbsp;
+            Rotate to the next support person on&nbsp;
             <MuiPickersUtilsProvider utils={DateFnsUtils}>
                 <TextField
                     id="date"
@@ -21,9 +21,12 @@ export default function RotationScheduler({ selectedTime, setSelectedTime, selec
                     InputLabelProps={{shrink: true}}
                     inputProps={{step: 300}}
                 />
-            </MuiPickersUtilsProvider>
-            &nbsp;
-            and every&nbsp;
+            </MuiPickersUtilsProvider>.
+
+            <br/>
+            <br/>
+
+            After that, rotate every&nbsp;
             <Select
                 native
                 value={selectedFreq}
@@ -35,7 +38,12 @@ export default function RotationScheduler({ selectedTime, setSelectedTime, selec
 
                 {availableFreq.map(i => <option key={i} value={i}>{i}</option>)}
             </Select>
-            &nbsp;days thereafter rotate to the next support person and send a message to Slack at approximately &nbsp;
+            &nbsp;days.
+
+            <br/>
+            <br/>
+
+            Rotate at approximately&nbsp;
             <MuiPickersUtilsProvider utils={DateFnsUtils}>
                 <TextField
                     id="time"
@@ -47,7 +55,7 @@ export default function RotationScheduler({ selectedTime, setSelectedTime, selec
                     inputProps={{step: 300}}
                 />
             </MuiPickersUtilsProvider>
-                &nbsp;local time.
+            &nbsp;local time.
         </React.Fragment>
     )
 }

@@ -18,7 +18,7 @@ import {setLoading, setNotification, wait} from "./action";
 import api from "./API";
 import {parseDateTimeStrings} from "./Util";
 
-export default function CreateTeamContainer({userName, userId}) {
+export default function CreateTeam({userName, userId}) {
 
     const dispatch = useDispatch()
     const setNotificationDispatch = (msg) => dispatch(setNotification(msg))

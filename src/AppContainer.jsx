@@ -5,16 +5,17 @@ import {setLoading, setNotification, setTeamId, setUserFullName, setUserId} from
 import {queries, queryProfile} from '@monsantoit/profile-client'
 import PropTypes from "prop-types";
 import NotificationContainer from "./NotificationContainer"
-import {Switch, Route, withRouter} from 'react-router-dom'
+import {Route, Switch, withRouter} from 'react-router-dom'
 import api from "./API";
 import ManageTeamContainer from "./ManageTeamContainer";
-import CreateTeamContainer from "./CreateTeamContainer";
+import CreateTeam from "./CreateTeam";
 import ProgressContainer from "./ProgressContainer";
 import OnCallCard from "./OnCallCard";
 
 export class AppContainer extends React.Component {
 
   componentDidMount() {
+    //TODO: This method is not needed when using the on call card
 
     const { setUserId, setNotification, setUserFullName, setTeamId } = this.props
 
@@ -54,7 +55,7 @@ export class AppContainer extends React.Component {
           <Route exact path="/">
             <div style={{margin: '30px'}}>
               {teamId !== null && teamId !== undefined && <ManageTeamContainer/> }
-              {teamId === null && teamId !== undefined && <CreateTeamContainer userName={userName} userId={userId}/>}
+              {teamId === null && teamId !== undefined && <CreateTeam userName={userName} userId={userId}/>}
             </div>
           </Route>
           <Route exact path="/on-call/:teamId">

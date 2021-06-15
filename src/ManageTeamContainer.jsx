@@ -70,7 +70,7 @@ export class ManageTeamContainer extends React.Component {
 
                     rotationFreq: teamSetup.rotationConfig.rotationFrequencyDays,
                     rotationTime: padTimeUnit(rotationDate.getHours()) + ":" + padTimeUnit(rotationDate.getMinutes()),
-                    rotationDate: rotationDate.getFullYear() + "-" + padTimeUnit(rotationDate.getMonth()) + "-" + padTimeUnit(rotationDate.getDate()),
+                    rotationDate: rotationDate.getFullYear() + "-" + padTimeUnit(rotationDate.getMonth()+1) + "-" + padTimeUnit(rotationDate.getDate()),
 
                     slackHookUrl: teamSetup.slackConfig.slackHookUrl,
                     slackHookMessage: teamSetup.slackConfig.slackMessage,

@@ -8,25 +8,29 @@ import api from "./API";
 export default function OnCallCard() {
 
     const { teamId } = useParams()
-
     const dispatch = useDispatch()
-    const setNotificationDispatch = (msg) => dispatch(setNotification(msg))
     const setLoadingDispatch = (on) => dispatch(setLoading(on))
+    const setNotificationDispatch = (msg) => dispatch(setNotification(msg))
 
     const [onCallInfo, setOnCallInfo] = React.useState(null)
+    const [date, setDate] = React.useState(null)
+    const [gotData, setGotData] = React.useState(false)
 
-    const fetchOnCallCardData = () => {
+    if (gotData === false) {
         setLoadingDispatch(true)
 
         api.getOnCallUserForTeam(teamId)
             .then(res => {
                 setOnCallInfo(res.body)
+                setDate(new Date(Date.parse(res.body.until)))
+            }).catch(err => {
+                const msg = (err.response && err.response.body) ? err.response.body.errorMessage : 'Please contact support if the problem persists'
+                setNotificationDispatch({message: 'Failed to load the contact card. ' + msg, type: 'error'})
+            }).finally(() => {
                 setLoadingDispatch(false)
+                setGotData(true)
             })
-            .catch(err => setLoadingDispatch(false))
     }
-
-    fetchOnCallCardData()
 
     return (
         <Box m={4}>
@@ -35,9 +39,7 @@ export default function OnCallCard() {
                     <Typography variant='h5'>Support Triage Manager - On Call Card</Typography>
                 </Box>
 
-                <Box my={5} mx={2} style={{width: '300px'}}>
-
-
+                <Box my={5} mx={2} style={{width: '400px'}}>
                     {onCallInfo !== null && (
                     <Card variant="outlined">
                         <CardContent>
@@ -47,22 +49,17 @@ export default function OnCallCard() {
                             <Typography color="textSecondary" gutterBottom>
                                 {onCallInfo.name} is currently on call
                             </Typography>
-                            <Typography variant="body2" component="p">
                                 <Box m={1}>
-                                    <b>Slack:</b> {onCallInfo.name} (<a href={'https://monslacko.slack.com/team/' + onCallInfo.slackId} target="_blank">{onCallInfo.slackId}</a>)
+                                    <Typography variant="body1" component="p">
+                                        <b>Slack:</b> {onCallInfo.name}&nbsp;
+                                        (<a href={'https://monslacko.slack.com/team/' + onCallInfo.slackId} target="_blank">{onCallInfo.slackId}</a>)
+                                    </Typography>
                                 </Box>
                                 <Box m={1}>
-                                    <b>On Call Until:</b> {onCallInfo.until ? onCallInfo.until.toLocaleString() : ''}
+                                    <Typography variant="body1" component="p"><b>On Call Until:</b> {date ? date.toLocaleString(): ''}</Typography>
                                 </Box>
-                            </Typography>
                         </CardContent>
                     </Card>
-                    )}
-
-                    {onCallInfo === null && (
-                        <Box m={5} style={{width: '300px'}}>
-                            Couldn't load the on call card. Are you sure the URL is correct?
-                        </Box>
                     )}
                 </Box>
             </Paper>
