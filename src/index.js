@@ -10,7 +10,7 @@ import {enableAuthTokenSupport} from '@monsantoit/profile-client'
 function loadPhoenixNavBar() {
     return phoenixNavBar.install({
         element: document.querySelector('#nav'),
-        suiteId: 'velocity',
+        suiteId: 'dev-tools',
         productId: 'support-triage-manager',
         cookie: 'support-triage-ui-cc',
     })
