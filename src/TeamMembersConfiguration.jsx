@@ -19,7 +19,7 @@ import HelpIcon from "@material-ui/icons/Help";
 export default function TeamMembersConfiguration({users, updateUsers, setNotification, requiredUsers = []}) {
 
     const minUsers = 2
-    const maxUsers = 6
+    const maxUsers = 15
 
     const areAllFilled = () => {
         return users.find(user => user.slackId === '' || user.name === '') === undefined
