@@ -32,8 +32,8 @@ class API {
         return this._request('GET', `${this.url}/setup`)
     }
 
-    slackSend() {
-        return this._request('GET', `${this.url}/slack-send`)
+    teamsSend() {
+        return this._request('GET', `${this.url}/teams-send`)
     }
 
     getOnCalluser() {
@@ -48,7 +48,7 @@ class API {
     // POST
     //
 
-    setupTeam(teamName, nextRotationTime, rotationFrequency, slackHookUrl, slackMessage, teamMembers) {
+    setupTeam(teamName, nextRotationTime, rotationFrequency, hookUrl, message, teamMembers) {
         const json = `
             {
               "teamName": "${teamName}",
@@ -56,9 +56,9 @@ class API {
                 "nextRotationTime": "${nextRotationTime}",
                 "rotationFrequencyDays": ${rotationFrequency}
               },
-              "slackConfig": {
-                "slackHookUrl": "${slackHookUrl}",
-                "slackMessage": "${slackMessage}"
+              "teamsConfig": {
+                "hookUrl": "${hookUrl}",
+                "message": "${message}"
               },
               "people": [
                 ${teamMembers.map(person => this._personJson(person)).join(",")}
@@ -79,9 +79,9 @@ class API {
             .send(`{ "nextRotationTime": "${rotationDate}", "rotationFrequencyDays": ${rotationFreq} }`)
     }
 
-    saveSlackConfig(slackHookUrl, slackMessage) {
-        return this._request('PUT', `${this.url}/slack-config`)
-            .send(`{ "slackHookUrl": "${slackHookUrl}", "slackMessage": "${slackMessage}" }`)
+    saveTeamsConfig(hookUrl, message) {
+        return this._request('PUT', `${this.url}/teams-config`)
+            .send(`{ "hookUrl": "${hookUrl}", "message": "${message}" }`)
     }
 
     saveTeamMembers(teamMembers) {
@@ -94,8 +94,8 @@ class API {
         return this._request('PUT', `${this.url}/team/name/${teamName}`)
     }
 
-    setOnCallPerson(slackId) {
-        return this._request('PUT', `${this.url}/on-call/${slackId}`)
+    setOnCallPerson(userId) {
+        return this._request('PUT', `${this.url}/on-call/${userId}`)
     }
 
     //
@@ -111,7 +111,7 @@ class API {
 
 
     _personJson(person)  {
-        return `{"name": "${person.name}", "slackId": "${person.slackId}"}`
+        return `{"name": "${person.name}", "userId": "${person.userId}"}`
     }
 
     _request(method, url) {
@@ -131,7 +131,7 @@ class API {
 
 //TODO: Remove the hardcoded URL used due to the innovation week time crunch
 const api = new API(
-    'https://test.velocity-np.ag/support-triage-manager-api/v1',
+    'http://localhost/support-triage-manager-api/v1',
     60 * 1000,
     60 * 1000
 )

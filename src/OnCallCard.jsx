@@ -51,8 +51,7 @@ export default function OnCallCard() {
                             </Typography>
                                 <Box m={1}>
                                     <Typography variant="body1" component="p">
-                                        <b>Slack:</b> {onCallInfo.name}&nbsp;
-                                        (<a href={'https://monslacko.slack.com/team/' + onCallInfo.slackId} target="_blank">{onCallInfo.slackId}</a>)
+                                        <b>User ID:</b> {onCallInfo.userId}
                                     </Typography>
                                 </Box>
                                 <Box m={1}>

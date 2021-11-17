@@ -6,10 +6,10 @@ import api from "./API";
 import {
     handleDeleteTeam,
     handleSaveRotation,
-    handleSaveSlackSettings,
+    handleSaveTeamsSettings,
     handleSaveTeamMembers,
     handleSaveTeamName,
-    handleSendSlackMessage,
+    handleSendTeamsMessage,
     handleSetOnCallPerson,
     setLoading,
     setNotification
@@ -17,7 +17,7 @@ import {
 import PropTypes from "prop-types";
 import RotationScheduler from "./RotationScheduler";
 import TeamMembersConfiguration from "./TeamMembersConfiguration";
-import SlackConfiguration from "./SlackConfiguration";
+import TeamsConfiguration from "./TeamsConfiguration";
 import PersonOnCall from "./PersonOnCall";
 import {ChickenTestDialog} from "./ChickenTestDialog";
 import {padTimeUnit} from "./Util";
@@ -38,12 +38,12 @@ export class ManageTeamContainer extends React.Component {
             rotationTime: "09:00",
             rotationDate: "2020-01-01",
 
-            slackHookUrl: '',
+            hookUrl: '',
 
             onCallUserId: '',
             selectedOnCallUserId: '',
 
-            showSlackMsgChickenTest: false,
+            showMsgChickenTest: false,
             showChangeOnCallChickenTest: false,
             showDeleteTeamChickenTest: false
         }
@@ -58,7 +58,7 @@ export class ManageTeamContainer extends React.Component {
             .then(values => {
                 const teamSetup = values[0].body
                 const onCallPerson = values[1].body
-                const peopleTransformer = (people) => Array.from(people, (people, i) => ({id: i, slackId: people.slackId, name: people.name}))
+                const peopleTransformer = (people) => Array.from(people, (people, i) => ({id: i, userId: people.userId, name: people.name}))
                 const teamMembers = peopleTransformer(teamSetup.people)
 
                 const rotationDate = new Date(Date.parse(teamSetup.rotationConfig.nextRotationTime))
@@ -72,11 +72,11 @@ export class ManageTeamContainer extends React.Component {
                     rotationTime: padTimeUnit(rotationDate.getHours()) + ":" + padTimeUnit(rotationDate.getMinutes()),
                     rotationDate: rotationDate.getFullYear() + "-" + padTimeUnit(rotationDate.getMonth()+1) + "-" + padTimeUnit(rotationDate.getDate()),
 
-                    slackHookUrl: teamSetup.slackConfig.slackHookUrl,
-                    slackHookMessage: teamSetup.slackConfig.slackMessage,
+                    hookUrl: teamSetup.teamsConfig.hookUrl,
+                    hookMessage: teamSetup.teamsConfig.message,
 
-                    onCallUserId: onCallPerson.slackId,
-                    selectedOnCallUserId: onCallPerson.slackId
+                    onCallUserId: onCallPerson.userId,
+                    selectedOnCallUserId: onCallPerson.userId
                 }
 
                 this.setState(newState)
@@ -112,10 +112,11 @@ export class ManageTeamContainer extends React.Component {
 
     render() {
 
-        const { userId, setNotification, handleSaveRotation, handleSaveSlackSettings, handleSendSlackMessage,
+        const { userId, setNotification, handleSaveRotation, handleSaveTeamsSettings, handleSendTeamsMessage,
             handleSaveTeamMembers, handleSaveTeamName, handleSetOnCallPerson, handleDeleteTeam, teamId } = this.props
-        const {selectedTab, teamName, rotationTime, rotationFreq, teamMembers, slackHookUrl, slackHookMessage,
-            onCallUserId, selectedOnCallUserId, teamMembersForOnCall, showSlackMsgChickenTest, showChangeOnCallChickenTest, showDeleteTeamChickenTest, rotationDate } = this.state
+        const {selectedTab, teamName, rotationTime, rotationFreq, teamMembers, hookUrl, hookMessage,
+            onCallUserId, selectedOnCallUserId, teamMembersForOnCall, showMsgChickenTest, showChangeOnCallChickenTest,
+            showDeleteTeamChickenTest, rotationDate } = this.state
         const TabPanel = this.tabPanel
 
         const handleSetTeamName = (teamName) => this.setState({teamName})
@@ -123,18 +124,18 @@ export class ManageTeamContainer extends React.Component {
         const handleSetRotationDate = (rotationDate) => this.setState({rotationDate})
         const handleSetRotationFreq = (rotationFreq) => this.setState({rotationFreq})
         const handleSetTeamMembers = (teamMembers) => this.setState( {teamMembers})
-        const handleSetSlackHookUrl = (slackHookUrl) => this.setState({slackHookUrl})
-        const handleSetSlackMessage = (slackHookMessage) => this.setState({slackHookMessage})
-        const handleSetOnCallUser = (slackId) => this.setState({selectedOnCallUserId: slackId})
+        const handleSetTeamsHookUrl = (hookUrl) => this.setState({hookUrl})
+        const handleSetTeamsMessage = (hookMessage) => this.setState({hookMessage})
+        const handleSetOnCallUser = (userId) => this.setState({selectedOnCallUserId: userId})
         const handleSelectTab = (event, newValue) => this.setState({selectedTab: newValue})
-        const handleSlackMsgChickenTest = (bool) => this.setState({showSlackMsgChickenTest: bool})
+        const handleTeamsMsgChickenTest = (bool) => this.setState({showMsgChickenTest: bool})
         const handleChangeOnCallChickenTest = (bool) => this.setState({showChangeOnCallChickenTest: bool})
         const handleDeleteTeamChickenTest = (bool) => this.setState({showDeleteTeamChickenTest: bool})
 
         const saveRotation = () => handleSaveRotation(rotationFreq, rotationTime, rotationDate)
-        const saveSlackSettings = () => handleSaveSlackSettings(slackHookUrl, slackHookMessage)
-        const sendSlackMessage = () => handleSendSlackMessage()
-        const saveTeamName = () => handleSaveTeamName(teamName)
+        const saveTeamsSettings = () => handleSaveTeamsSettings(hookUrl, hookMessage)
+        const sendTeamsMessage = () => handleSendTeamsMessage()
+        const saveTeamsName = () => handleSaveTeamName(teamName)
         const saveOnCallPerson = () => handleSetOnCallPerson(selectedOnCallUserId)
             .then(res => this.setState({onCallUserId: selectedOnCallUserId})) //update the on call user id in state if changing it successfully
         const saveTeamMembers = () => handleSaveTeamMembers(teamMembers)
@@ -151,7 +152,7 @@ export class ManageTeamContainer extends React.Component {
                             <Tab label="Team Info" {...this.tabPanelProps(0)} />
                             <Tab label="Person On Call" {...this.tabPanelProps(1)} />
                             <Tab label="Team Members" {...this.tabPanelProps(2)} />
-                            <Tab label="Slack" {...this.tabPanelProps(3)} />
+                            <Tab label="MS Teams" {...this.tabPanelProps(3)} />
                             <Tab label="Rotation Schedule" {...this.tabPanelProps(4)} />
                         </Tabs>
                     </AppBar>
@@ -165,7 +166,7 @@ export class ManageTeamContainer extends React.Component {
                             View or share your team's <a href={'/support-triage-manager/on-call/' + teamId} target="_blank">On Call Card</a>
                         </Box>
 
-                        <Button variant="contained" color="primary" onClick={saveTeamName}>Save</Button>
+                        <Button variant="contained" color="primary" onClick={saveTeamsName}>Save</Button>
                         &nbsp;
                         <Button variant="contained" color="secondary" onClick={() => handleDeleteTeamChickenTest(true)}>Delete Team</Button>
                         <ChickenTestDialog isOpen={showDeleteTeamChickenTest} setOpen={handleDeleteTeamChickenTest} actionCallback={handleDeleteTeam}
@@ -178,7 +179,7 @@ export class ManageTeamContainer extends React.Component {
 
                         <Button variant="contained" color="primary" onClick={() => handleChangeOnCallChickenTest(true)}>Save</Button>
                         <ChickenTestDialog isOpen={showChangeOnCallChickenTest} setOpen={handleChangeOnCallChickenTest} actionCallback={saveOnCallPerson}
-                                           chickenTestQuestion="Are you sure you want change the on call person? This will notify Slack."/>
+                                           chickenTestQuestion="Are you sure you want change the on call person? This will notify Teams."/>
                     </TabPanel>
                     <TabPanel value={selectedTab} index={2}>
                         <Box my={2}>
@@ -190,17 +191,17 @@ export class ManageTeamContainer extends React.Component {
                     </TabPanel>
                     <TabPanel value={selectedTab} index={3}>
                         <Box my={2}>
-                            <SlackConfiguration slackHookUrl={slackHookUrl} slackMessage={slackHookMessage}
-                                                handleSlackHookUrlChange={handleSetSlackHookUrl} handleSlackMessageChange={handleSetSlackMessage} />
+                            <TeamsConfiguration hookUrl={hookUrl} message={hookMessage}
+                                                handleHookUrlChange={handleSetTeamsHookUrl} handleMessageChange={handleSetTeamsMessage} />
                         </Box>
 
-                        <Button variant="contained" color="primary" onClick={saveSlackSettings}>Save</Button>
+                        <Button variant="contained" color="primary" onClick={saveTeamsSettings}>Save</Button>
 
                         &nbsp;
 
-                        <Button variant="contained" color="secondary" onClick={() => handleSlackMsgChickenTest(true)}>Send Slack Message</Button>
-                        <ChickenTestDialog isOpen={showSlackMsgChickenTest} setOpen={handleSlackMsgChickenTest} actionCallback={sendSlackMessage}
-                                           chickenTestQuestion="Are you sure you want to send a Slack message? This will not change who is on support."/>
+                        <Button variant="contained" color="secondary" onClick={() => handleTeamsMsgChickenTest(true)}>Send Teams Message</Button>
+                        <ChickenTestDialog isOpen={showMsgChickenTest} setOpen={handleTeamsMsgChickenTest} actionCallback={sendTeamsMessage}
+                                           chickenTestQuestion="Are you sure you want to send a Teams message? This will not change who is on support."/>
                     </TabPanel>
                     <TabPanel value={selectedTab} index={4}>
                         <Box my={2}>
@@ -231,7 +232,7 @@ ManageTeamContainer.defaultProps = {
 }
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-    setLoading, setNotification, handleSaveRotation, handleSaveSlackSettings, handleSendSlackMessage,
+    setLoading, setNotification, handleSaveRotation, handleSaveTeamsSettings, handleSendTeamsMessage,
     handleSaveTeamMembers, handleSaveTeamName, handleSetOnCallPerson, handleDeleteTeam
 }, dispatch)
 

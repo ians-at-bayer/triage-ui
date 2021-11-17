@@ -11,7 +11,7 @@ import {
 } from "@material-ui/core";
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import RotationScheduler from "./RotationScheduler";
-import SlackConfiguration from "./SlackConfiguration";
+import TeamsConfiguration from "./TeamsConfiguration";
 import TeamMembersConfiguration from "./TeamMembersConfiguration";
 import {useDispatch} from "react-redux";
 import {setLoading, setNotification, wait} from "./action";
@@ -27,21 +27,21 @@ export default function CreateTeam({userName, userId}) {
     const [expanded, setExpanded] = React.useState(false)
     const [teamName, setTeamName] = React.useState("")
     const [selectedFreq, setSelectedFreq] = React.useState(7)
-    const [selectedDate, setSelectedDate] = React.useState("2020-01-01")
+    const [selectedDate, setSelectedDate] = React.useState("2022-01-01")
     const [selectedTime, setSelectedTime] = React.useState("09:00")
-    const [slackHookUrl, setSlackHookUrl] = React.useState("http://yourslackhookurlhere/")
-    const [slackMessage, setSlackMessage] = React.useState("Hi I'm [name] and I'm on support this week. Feel free to DM me [slackid] or my team <!subteam^S6SQ21GSC|Triton Dev Team>. If you want to keep up with who is on support, try using our <[cardurl]|contact card>. It always has the latest support info for our team.")
-    const [users, updateUsers] = React.useState([{id: 0, slackId: userId, name: userName},{id: 1, slackId: '', name: ''}])
+    const [teamsHookUrl, setTeamsHookUrl] = React.useState("http://yourteamshookurlhere/")
+    const [teamsMessage, setTeamsMessage] = React.useState("Hi I'm [name] and I'm on support this week. If you want to keep up with who is on support, try using our [contact card]([cardurl]). It always has the latest support info for our team.")
+    const [users, updateUsers] = React.useState([{id: 0, userId: userId, name: userName},{id: 1, userId: '', name: ''}])
 
     const firstUserName = users[0] ? users[0].name : null
 
     const createTeam = () => {
-        if (selectedDate === null || teamName === '' || slackHookUrl === '' || slackMessage === '') {
+        if (selectedDate === null || teamName === '' || teamsHookUrl === '' || teamsMessage === '') {
             setNotificationDispatch({message: "Failed to create team: All form fields must be filled before submitting", type: 'error'})
             return
         }
 
-        if (users.find(user => user.slackId === '' || user.name === '') !== undefined) {
+        if (users.find(user => user.userId === '' || user.name === '') !== undefined) {
             setNotificationDispatch({message: "Failed to create team: All user fields must be filled before submitting", type: 'error'})
             return
         }
@@ -61,7 +61,7 @@ export default function CreateTeam({userName, userId}) {
         }
 
         setLoadingDispatch(true)
-        api.setupTeam(teamName, nextRotation.toISOString(), selectedFreq, slackHookUrl, slackMessage, users)
+        api.setupTeam(teamName, nextRotation.toISOString(), selectedFreq, teamsHookUrl, teamsMessage, users)
             .then(res => {
                 setLoadingDispatch(false)
                 setNotificationDispatch({message: "Team created successfully" , type: 'info'})
@@ -88,7 +88,7 @@ export default function CreateTeam({userName, userId}) {
 
                         <Box my={2}>
                             The Support Triage Manager tracks and manages the support rotation schedule for your team.
-                            It automatically posts messages to Slack when the rotation order changes so team members
+                            It automatically posts messages to Teams when the rotation order changes so team members
                             and users know who is in charge of support.
                         </Box>
 
@@ -154,13 +154,13 @@ export default function CreateTeam({userName, userId}) {
 
                         <Grid  item xs={12}>
                             <Paper variant="outlined" style={{padding: '10px'}}>
-                                <Typography variant="h6">Setup Your Slack Hook</Typography>
+                                <Typography variant="h6">Setup Your Teams Hook</Typography>
 
                                 <Box my={2}>
-                                    <SlackConfiguration slackHookUrl={slackHookUrl}
-                                                        handleSlackHookUrlChange={setSlackHookUrl}
-                                                        slackMessage={slackMessage}
-                                                        handleSlackMessageChange={setSlackMessage}/>
+                                    <TeamsConfiguration hookUrl={teamsHookUrl}
+                                                        handleHookUrlChange={setTeamsHookUrl}
+                                                        message={teamsMessage}
+                                                        handleMessageChange={setTeamsMessage}/>
                                 </Box>
                             </Paper>
                         </Grid>
@@ -168,7 +168,7 @@ export default function CreateTeam({userName, userId}) {
                         <Grid item xs={12}>
                             <Paper variant="outlined" style={{padding: '10px'}}>
                                 <Box my={2}>
-                                    When you click the "Create Team" button, {firstUserName ? firstUserName + ' (the first team member in the rotation order)' : 'the first team member in the rotation order'} will be put on support until {selectedDate} at {selectedTime}. <b>Slack will be notified of this immediately.</b>
+                                    When you click the "Create Team" button, {firstUserName ? firstUserName + ' (the first team member in the rotation order)' : 'the first team member in the rotation order'} will be put on support until {selectedDate} at {selectedTime}. <b>Teams will be notified of this immediately.</b>
                                 </Box>
                                 <Box my={2}>
                                     <Button variant="contained" color="primary" onClick={createTeam}>Create Team</Button>

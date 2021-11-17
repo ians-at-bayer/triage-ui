@@ -16,7 +16,7 @@ export default function PersonOnCall({users, onCallUserId, setOnCallUser}) {
     return (
         <React.Fragment>
             <Box my={2}>
-                Select a person below to put them on support. <b>Slack will be notified of the change.</b>
+                Select a person below to put them on support. <b>Teams will be notified of the change.</b>
             </Box>
 
                 <div className={classes.root}>
@@ -24,10 +24,10 @@ export default function PersonOnCall({users, onCallUserId, setOnCallUser}) {
                         <List component="nav" >
                             {users.map(user => (
                                 <ListItem
-                                    key={`person-on-call-${user.slackId}`}
+                                    key={`person-on-call-${user.userId}`}
                                     button
-                                    selected={onCallUserId === user.slackId}
-                                    onClick={() => setOnCallUser(user.slackId)}
+                                    selected={onCallUserId === user.userId}
+                                    onClick={() => setOnCallUser(user.userId)}
                                 >
                                     <ListItemText primary={user.name} />
                                 </ListItem>

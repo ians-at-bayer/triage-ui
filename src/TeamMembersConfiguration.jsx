@@ -22,7 +22,7 @@ export default function TeamMembersConfiguration({users, updateUsers, setNotific
     const maxUsers = 15
 
     const areAllFilled = () => {
-        return users.find(user => user.slackId === '' || user.name === '') === undefined
+        return users.find(user => user.userId === '' || user.name === '') === undefined
     }
 
     const handleUserNameChange = (id, name) => {
@@ -33,15 +33,15 @@ export default function TeamMembersConfiguration({users, updateUsers, setNotific
         updateUsers(usersCopy)
     }
 
-    const handleUserSlackIdChange = (id, newId) => {
-        if (newId !== '' && users.find(user => user.slackId == newId) !== undefined) {
-            setNotification({message: `Slack ID "${newId}" has already been added to the team`, type: 'error' })
+    const handleUserIdChange = (id, newId) => {
+        if (newId !== '' && users.find(user => user.userId == newId) !== undefined) {
+            setNotification({message: `User ID "${newId}" has already been added to the team`, type: 'error' })
             return
         }
 
         const usersCopy = [ ... users ]
 
-        usersCopy.find(user => user.id == id).slackId = newId
+        usersCopy.find(user => user.id == id).userId = newId
 
         updateUsers(usersCopy)
 
@@ -52,7 +52,7 @@ export default function TeamMembersConfiguration({users, updateUsers, setNotific
 
         const usersCopy = [...users]
 
-        usersCopy.push({id: users.length , slackId: '', name: ''})
+        usersCopy.push({id: users.length , userId: '', name: ''})
         updateUsers(usersCopy)
     }
 
@@ -68,7 +68,7 @@ export default function TeamMembersConfiguration({users, updateUsers, setNotific
     }
 
     const onDrop = ({ removedIndex, addedIndex }) => updateUsers(arrayMove(users, removedIndex, addedIndex))
-    const isRequiredUser = (slackId) => requiredUsers.includes(slackId)
+    const isRequiredUser = (userId) => requiredUsers.includes(userId)
 
     return (
         <React.Fragment>
@@ -103,14 +103,14 @@ export default function TeamMembersConfiguration({users, updateUsers, setNotific
                             <ListItem>
                                     <TextField key={`${user.id}-name`} style={{width: '300px'}} variant='outlined'
                                                label="Team Member Name" onChange={e => handleUserNameChange(user.id, e.target.value)}
-                                               value={user.name} inputProps={{ maxLength: 50 }} disabled={isRequiredUser(user.slackId)}/>
+                                               value={user.name} inputProps={{ maxLength: 50 }} disabled={isRequiredUser(user.userId)}/>
                                     <TextField key={`${user.id}-id`} style={{width: '300px'}} variant='outlined'
-                                               label="Team Member Slack ID" onChange={e => handleUserSlackIdChange(user.id, e.target.value)}
-                                               value={user.slackId} inputProps={{ maxLength: 50 }} disabled={isRequiredUser(user.slackId)}/>
+                                               label="Team Member Teams ID" onChange={e => handleUserIdChange(user.id, e.target.value)}
+                                               value={user.userId} inputProps={{ maxLength: 50 }} disabled={isRequiredUser(user.userId)}/>
 
                                 <ListItemSecondaryAction>
                                     <ListItemIcon>
-                                        <IconButton disabled={users.length <= minUsers || isRequiredUser(user.slackId)} onClick={() => handleRemoveUser(user.id)}>
+                                        <IconButton disabled={users.length <= minUsers || isRequiredUser(user.userId)} onClick={() => handleRemoveUser(user.id)}>
                                             <RemoveCircleIcon />
                                         </IconButton>
                                     </ListItemIcon>
