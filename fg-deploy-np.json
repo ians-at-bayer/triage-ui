@@ -1,0 +1,26 @@
+{
+  "buildOnly": false,
+  "name": "triage-ui",
+  "fargateParameters": {
+    "cpu": "1024",
+    "memory": "2GB",
+    "instanceCount": 1,
+    "healthCheckPath": "/support-triage-manager",
+    "healthCheckGracePeriod": 240,
+    "taskRoleName": "ecsTaskExecutionRole",
+    "port": 8080,
+    "timeoutInSeconds": 600
+  },
+  "docker": {
+    "file": "Dockerfile"
+  },
+  "aws": {
+    "accountId": "262928956091",
+    "fargateStackName": "SC-262928956091-pp-qpztbexrzms3u",
+    "region": "us-east-1",
+    "tags":{
+      "mon:regulated": "no",
+      "mon:data-classification": "internal"
+    }
+  }
+}
