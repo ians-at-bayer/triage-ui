@@ -8,13 +8,13 @@ Simple web application for managing support triage rotations between team member
 ### `npm run build`
 
 Builds the app for production to the `build` folder.
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Bundles React in production mode and optimizes the build for the best performance.
 
 ## Deploy
 
-### `cf-deploy`
+### `fg-deploy`
 
-Deploy contents of the `build` folder to cloud foundry
+Deploy contents of the `build` folder to ECS Fargate.
 
 ## Run
 
