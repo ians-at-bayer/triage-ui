@@ -12,7 +12,8 @@ import {
     handleSendTeamsMessage,
     handleSetOnCallPerson,
     setLoading,
-    setNotification
+    setNotification,
+    handleChatbotSettings
 } from "./action";
 import PropTypes from "prop-types";
 import RotationScheduler from "./RotationScheduler";
@@ -21,6 +22,7 @@ import TeamsConfiguration from "./TeamsConfiguration";
 import PersonOnCall from "./PersonOnCall";
 import {ChickenTestDialog} from "./ChickenTestDialog";
 import {padTimeUnit} from "./Util";
+import ChatbotConfiguration from "./ChatbotConfiguration";
 
 export class ManageTeamContainer extends React.Component {
 
@@ -39,6 +41,7 @@ export class ManageTeamContainer extends React.Component {
             rotationDate: "2020-01-01",
 
             hookUrl: '',
+            chatbotId: null,
 
             onCallUserId: '',
             selectedOnCallUserId: '',
@@ -73,6 +76,7 @@ export class ManageTeamContainer extends React.Component {
                     rotationDate: rotationDate.getFullYear() + "-" + padTimeUnit(rotationDate.getMonth()+1) + "-" + padTimeUnit(rotationDate.getDate()),
 
                     hookUrl: teamSetup.teamsConfig.hookUrl,
+                    chatbotId: teamSetup.chatbotId,
                     hookMessage: teamSetup.teamsConfig.message,
 
                     onCallUserId: onCallPerson.userId,
@@ -113,10 +117,10 @@ export class ManageTeamContainer extends React.Component {
     render() {
 
         const { userId, setNotification, handleSaveRotation, handleSaveTeamsSettings, handleSendTeamsMessage,
-            handleSaveTeamMembers, handleSaveTeamName, handleSetOnCallPerson, handleDeleteTeam, teamId } = this.props
+            handleSaveTeamMembers, handleSaveTeamName, handleSetOnCallPerson, handleDeleteTeam, teamId, handleChatbotSettings } = this.props
         const {selectedTab, teamName, rotationTime, rotationFreq, teamMembers, hookUrl, hookMessage,
             onCallUserId, selectedOnCallUserId, teamMembersForOnCall, showMsgChickenTest, showChangeOnCallChickenTest,
-            showDeleteTeamChickenTest, rotationDate } = this.state
+            showDeleteTeamChickenTest, rotationDate, chatbotId } = this.state
         const TabPanel = this.tabPanel
 
         const handleSetTeamName = (teamName) => this.setState({teamName})
@@ -126,6 +130,7 @@ export class ManageTeamContainer extends React.Component {
         const handleSetTeamMembers = (teamMembers) => this.setState( {teamMembers})
         const handleSetTeamsHookUrl = (hookUrl) => this.setState({hookUrl})
         const handleSetTeamsMessage = (hookMessage) => this.setState({hookMessage})
+        const handleSetChatbotId = (chatbotId) => this.setState({chatbotId})
         const handleSetOnCallUser = (userId) => this.setState({selectedOnCallUserId: userId})
         const handleSelectTab = (event, newValue) => this.setState({selectedTab: newValue})
         const handleTeamsMsgChickenTest = (bool) => this.setState({showMsgChickenTest: bool})
@@ -136,6 +141,7 @@ export class ManageTeamContainer extends React.Component {
         const saveTeamsSettings = () => handleSaveTeamsSettings(hookUrl, hookMessage)
         const sendTeamsMessage = () => handleSendTeamsMessage()
         const saveTeamsName = () => handleSaveTeamName(teamName)
+        const saveChatbotSettings = () => handleChatbotSettings(chatbotId)
         const saveOnCallPerson = () => handleSetOnCallPerson(selectedOnCallUserId)
             .then(res => this.setState({onCallUserId: selectedOnCallUserId})) //update the on call user id in state if changing it successfully
         const saveTeamMembers = () => handleSaveTeamMembers(teamMembers)
@@ -154,6 +160,7 @@ export class ManageTeamContainer extends React.Component {
                             <Tab label="Team Members" {...this.tabPanelProps(2)} />
                             <Tab label="MS Teams" {...this.tabPanelProps(3)} />
                             <Tab label="Rotation Schedule" {...this.tabPanelProps(4)} />
+                            <Tab label="myGenAssist Chatbot" {...this.tabPanelProps(5)} />
                         </Tabs>
                     </AppBar>
                     <TabPanel value={selectedTab} index={0}>
@@ -212,6 +219,13 @@ export class ManageTeamContainer extends React.Component {
 
                         <Button variant="contained" color="primary" onClick={saveRotation}>Save</Button>
                     </TabPanel>
+                    <TabPanel value={selectedTab} index={5}>
+                        <Box my={2}>
+                            <ChatbotConfiguration chatbotId={chatbotId} handleChatbotIdChange={handleSetChatbotId} />
+                        </Box>
+
+                        <Button variant="contained" color="primary" onClick={saveChatbotSettings}>Save</Button>
+                    </TabPanel>
                 </Paper>
             </React.Fragment>
         )
@@ -233,7 +247,7 @@ ManageTeamContainer.defaultProps = {
 
 const mapDispatchToProps = dispatch => bindActionCreators({
     setLoading, setNotification, handleSaveRotation, handleSaveTeamsSettings, handleSendTeamsMessage,
-    handleSaveTeamMembers, handleSaveTeamName, handleSetOnCallPerson, handleDeleteTeam
+    handleSaveTeamMembers, handleSaveTeamName, handleSetOnCallPerson, handleDeleteTeam, handleChatbotSettings
 }, dispatch)
 
 export default connect(state => ({

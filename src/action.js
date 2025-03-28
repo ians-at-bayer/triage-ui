@@ -70,6 +70,17 @@ export function handleSaveTeamsSettings(hookUrl, message) {
     }
 }
 
+export function handleChatbotSettings(chatbotId) {
+    return dispatch => {
+        api.saveChatbotConfig(chatbotId)
+            .then(res => dispatch(setNotification({message: "Saved chatbot settings successfully", type: 'info'})))
+            .catch(err => {
+                dispatch(setNotification({message: "Failed to save chatbot settings", type: 'error'}))
+                console.log(err)
+            })
+    }
+}
+
 export function handleSendTeamsMessage() {
     return dispatch => {
         return api.teamsSend().then(res => dispatch(setNotification({message: "Teams message sent successfully", type: 'info'})))

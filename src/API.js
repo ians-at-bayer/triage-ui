@@ -98,6 +98,11 @@ class API {
         return this._request('PUT', `${this.url}/on-call/${userId}`)
     }
 
+    saveChatbotConfig(chatbotId) {
+        return this._request('PUT', `${this.url}/chatbot-config`)
+            .send(`{"chatbotId": "${chatbotId}"}`)
+    }
+
     //
     //Delete
     //
