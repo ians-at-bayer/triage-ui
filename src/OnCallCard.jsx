@@ -19,16 +19,12 @@ export default function OnCallCard() {
   if (gotData === false) {
     setLoadingDispatch(true);
 
-    api.getTeamSetup()
-        .then(res => {
-          setAssistantId(res.body.chatbotId);
-        })
-
     api
       .getOnCallUserForTeam(teamId)
       .then((res) => {
         setOnCallInfo(res.body);
         setDate(new Date(Date.parse(res.body.until)));
+        setAssistantId(res.body.assistantId)
       })
       .catch((err) => {
         const msg =

@@ -12,7 +12,7 @@ Bundles React in production mode and optimizes the build for the best performanc
 
 ## Deploy
 
-### `fg-deploy`
+### `DOCKER_DEFAULT_PLATFORM=linux/amd64 fg-deploy -m fg-deploy-np.json`
 
 Deploy contents of the `build` folder to ECS Fargate.
 
